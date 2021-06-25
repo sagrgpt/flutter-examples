@@ -34,6 +34,7 @@ class HomeMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        key: Key('app_bar'),
         title: Text(title),
       ),
       body: Center(
