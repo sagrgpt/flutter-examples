@@ -40,9 +40,6 @@ class _StaticHeightListWidgetState extends State<StaticHeightListWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*appBar: AppBar(
-        title: Text(widget.title),
-      ),*/
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -58,6 +55,7 @@ class _StaticHeightListWidgetState extends State<StaticHeightListWidget> {
 
   Widget videoView() {
     return Stack(
+      key: Key("video_view"),
       children: [
         StreamBuilder<String>(
           stream: _bloc.currentItem,
@@ -77,6 +75,7 @@ class _StaticHeightListWidgetState extends State<StaticHeightListWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               FloatingActionButton(
+                key: Key('btn_previous'),
                 heroTag: 'prevButton',
                 onPressed: () => _bloc.itemEventSink.add(PlayPrevious()),
                 backgroundColor: Colors.green,
@@ -85,6 +84,7 @@ class _StaticHeightListWidgetState extends State<StaticHeightListWidget> {
               ),
               const SizedBox(),
               FloatingActionButton(
+                key: Key('btn_next'),
                 heroTag: 'nextButton',
                 onPressed: () => _bloc.itemEventSink.add(PlayNext()),
                 backgroundColor: Colors.green,
@@ -105,6 +105,7 @@ class _StaticHeightListWidgetState extends State<StaticHeightListWidget> {
           initialData: _bloc.initialPlaylist,
           builder: (context, snapshot) {
             return ListView.builder(
+              key: Key('static_height_list'),
               controller: _bloc.scrollController,
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
@@ -112,6 +113,7 @@ class _StaticHeightListWidgetState extends State<StaticHeightListWidget> {
                 final isSelectedContainer =
                     snapshot.data.selectedIndex == index;
                 return Container(
+                  key: Key('list_item_$index'),
                   height: ITEM_HEIGHT - 4,
                   margin: EdgeInsets.symmetric(vertical: 2),
                   color: Colors.grey,

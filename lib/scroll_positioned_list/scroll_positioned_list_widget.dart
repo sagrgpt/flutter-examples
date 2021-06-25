@@ -64,6 +64,7 @@ class _ScrollPositionedListWidgetState
 
   Widget videoView() {
     return Stack(
+      key: Key("video_view"),
       children: [
         StreamBuilder(
           stream: _bloc.currentItem,
@@ -83,6 +84,7 @@ class _ScrollPositionedListWidgetState
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               FloatingActionButton(
+                key: Key('btn_previous'),
                 heroTag: 'prevButton',
                 onPressed: () => _bloc.itemEventSink.add(PlayPrevious()),
                 backgroundColor: Colors.green,
@@ -91,6 +93,7 @@ class _ScrollPositionedListWidgetState
               ),
               const SizedBox(),
               FloatingActionButton(
+                key: Key('btn_next'),
                 heroTag: 'nextButton',
                 onPressed: () => _bloc.itemEventSink.add(PlayNext()),
                 backgroundColor: Colors.green,
@@ -111,6 +114,7 @@ class _ScrollPositionedListWidgetState
           initialData: _bloc.initialPlaylist,
           builder: (context, snapshot) {
             return ScrollablePositionedList.builder(
+              key: Key('dynamic_height_list'),
               itemScrollController: _bloc.controller,
               itemCount: snapshot.data.length,
               itemPositionsListener: scrollListener,
@@ -119,6 +123,7 @@ class _ScrollPositionedListWidgetState
                 final isSelectedContainer =
                     snapshot.data.selectedIndex == index;
                 return Container(
+                  key: Key('list_item_$index'),
                   margin: EdgeInsets.symmetric(vertical: 2),
                   color: Colors.grey,
                   child: GestureDetector(

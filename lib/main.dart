@@ -3,7 +3,6 @@ import 'package:interactive_list/scroll_positioned_list/scroll_positioned_list_w
 import 'package:interactive_list/static_height_scrollable/static_height_list_widget.dart';
 
 import 'package:meta/meta.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,7 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomeMenu(title: 'Scrollable comparision'),
+      home: HomeMenu(title: 'Testing Flutter 1:1'),
     );
   }
 }
@@ -43,6 +42,7 @@ class HomeMenu extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             ElevatedButton(
+              key: Key('option_item_1'),
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => StaticHeightListWidget()),
@@ -50,6 +50,7 @@ class HomeMenu extends StatelessWidget {
               child: Text('Static Height Scrollable'),
             ),
             ElevatedButton(
+              key: Key('option_item_1'),
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => ScrollPositionedListWidget()),
