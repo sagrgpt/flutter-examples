@@ -51,7 +51,7 @@ class HomeMenu extends StatelessWidget {
               child: Text('Static Height Scrollable'),
             ),
             ElevatedButton(
-              key: Key('option_item_1'),
+              key: Key('option_item_2'),
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => ScrollPositionedListWidget()),
