@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:math';
 
-import 'package:flutter/animation.dart';
 import 'package:interactive_list/models/errors.dart';
 import 'package:interactive_list/repository/dog_repo.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../models/models.dart';
 
@@ -20,7 +18,7 @@ class IndexedScrollablePlaylistBloc {
   }
 
   final Playlist _playlist;
-  final ItemScrollController controller;
+  final AutoScrollController controller;
   final DogRepo repo;
   int _lastVisibleIndex;
   var _repoLock = false;
@@ -113,15 +111,15 @@ class IndexedScrollablePlaylistBloc {
   }
 
   void _scrollTo(int index) {
-    controller.scrollTo(
-      index: index,
+    controller.scrollToIndex(
+      index,
       duration: Duration(milliseconds: 300),
-      curve: Curves.decelerate,
+      preferPosition: AutoScrollPosition.begin
     );
   }
 
-  void _jumpTo(int index) {
-    controller.jumpTo(index: index);
+  void _jumpTo(double index) {
+    controller.jumpTo(index);
   }
 
   Future _fetchMoreItem() async {

@@ -1,8 +1,7 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:interactive_list/repository/dog_repo.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 import '../models/models.dart';
 import 'indexed_scrollable_playlist_bloc.dart';
@@ -20,20 +19,14 @@ class ScrollPositionedListWidget extends StatefulWidget {
 class _ScrollPositionedListWidgetState
     extends State<ScrollPositionedListWidget> {
   IndexedScrollablePlaylistBloc _bloc;
-  final scrollListener = ItemPositionsListener.create();
-  List<double> itemHeights;
+  final scrollDirection = Axis.vertical;
 
   @override
   void initState() {
     super.initState();
-    final heightGenerator = Random();
-    itemHeights = List<double>.generate(
-      4,
-      (int _) => heightGenerator.nextDouble() * (250 - 100) + 100,
-    );
     _bloc = IndexedScrollablePlaylistBloc(
       Playlist(),
-      ItemScrollController(),
+      AutoScrollController(axis: scrollDirection),
       DogRepo(),
     );
     _bloc.itemEventSink.add(InitializePlaylist());
@@ -55,7 +48,6 @@ class _ScrollPositionedListWidgetState
           children: <Widget>[
             videoView(),
             playlistView(),
-            positionView,
           ],
         ),
       ),
@@ -113,9 +105,35 @@ class _ScrollPositionedListWidgetState
           stream: _bloc.playlistUpdates,
           initialData: _bloc.initialPlaylist,
           builder: (context, snapshot) {
+            return ListView.builder(
+              itemBuilder: (context, index) {
+                final String imageUrl = snapshot.data[index];
+                final isSelectedContainer =
+                    snapshot.data.selectedIndex == index;
+                return AutoScrollTag(
+                  key: ValueKey(index),
+                  index: index,
+                  controller: _bloc.controller,
+                  child: Container(
+                    key: Key('list_item_$index'),
+                    margin: EdgeInsets.symmetric(vertical: 2),
+                    color: Colors.grey,
+                    child: GestureDetector(
+                      onTap: () => _bloc.itemEventSink.add(ItemSelected(index)),
+                      child: isSelectedContainer
+                          ? getSelectedImageView(imageUrl)
+                          : getSimpleImageView(imageUrl),
+                    ),
+                  ),
+                );
+              },
+              scrollDirection: scrollDirection,
+              controller: _bloc.controller,
+            );
+/*
             return ScrollablePositionedList.builder(
               key: Key('dynamic_height_list'),
-              itemScrollController: _bloc.controller,
+              // itemScrollController: _bloc.controller,
               itemCount: snapshot.data.length,
               itemPositionsListener: scrollListener,
               itemBuilder: (context, index) {
@@ -135,6 +153,7 @@ class _ScrollPositionedListWidgetState
                 );
               },
             );
+*/
           }),
     );
   }
@@ -160,36 +179,4 @@ class _ScrollPositionedListWidgetState
       ),
     );
   }
-
-  Widget get positionView => ValueListenableBuilder<Iterable<ItemPosition>>(
-        valueListenable: scrollListener.itemPositions,
-        builder: (context, positions, child) {
-          int min;
-          int max;
-          if (positions.isNotEmpty) {
-            // Determine the first visible item by finding the item with the
-            // smallest trailing edge that is greater than 0.  i.e. the first
-            // item whose trailing edge in visible in the viewport.
-            min = positions
-                .where((ItemPosition position) => position.itemTrailingEdge > 0)
-                .reduce((ItemPosition min, ItemPosition position) =>
-                    position.itemTrailingEdge < min.itemTrailingEdge
-                        ? position
-                        : min)
-                .index;
-            // Determine the last visible item by finding the item with the
-            // greatest leading edge that is less than 1.  i.e. the last
-            // item whose leading edge in visible in the viewport.
-            max = positions
-                .where((ItemPosition position) => position.itemLeadingEdge < 1)
-                .reduce((ItemPosition max, ItemPosition position) =>
-                    position.itemLeadingEdge > max.itemLeadingEdge
-                        ? position
-                        : max)
-                .index;
-          }
-          _bloc.itemEventSink.add(ListScrolled(min, max));
-          return const SizedBox();
-        },
-      );
 }
